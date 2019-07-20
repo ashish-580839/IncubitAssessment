@@ -1,6 +1,10 @@
 class UsersController < ApplicationController
 
+  before_action :authenticate_user, only: [:show, :edit, :update]
+
   before_action :set_user, only: [:show, :edit, :update]
+
+  before_action :authorize, only: [:show, :edit, :update]
 
   # GET /users/new
   def new
@@ -70,6 +74,10 @@ class UsersController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def edit_user_params
     params.require(:user).permit(:name, :username)
+  end
+
+  def authorize
+    raise NotAuthorizedError if current_user.id != @user.id
   end
 
 end
