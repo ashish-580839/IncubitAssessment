@@ -2,6 +2,8 @@ class ApplicationController < ActionController::Base
 
   rescue_from NotAuthorizedError, with: :user_not_authorized
 
+  rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
+
   def index
     redirect_to current_user if current_user.present?
   end
@@ -19,6 +21,10 @@ private
 
   def user_not_authorized
     redirect_to root_url, notice: "You are not authorized to perform this action."
+  end
+
+  def record_not_found(error)
+    render :file => "#{Rails.root}/public/404.html",  layout: false, status: :not_found
   end
 
 end

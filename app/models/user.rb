@@ -11,6 +11,7 @@ class User < ApplicationRecord
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   validates :email, uniqueness: true, allow_blank: true
 
+  validates :password, presence: true, on: :update
 
   validates :password, length: { minimum: 8 }, allow_blank: true
 
@@ -26,6 +27,14 @@ class User < ApplicationRecord
     self.reset_password_sent_at = Time.zone.now
     save!
     UserMailer.reset_password(id).deliver_now
+  end
+
+  def password_reset_expired?
+    Time.zone.now > ( reset_password_sent_at + (6.hours) )
+  end
+
+  def set_reset_fields_to_nil
+    update(reset_password_token: nil, reset_password_sent_at: nil)
   end
 
   private
