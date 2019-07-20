@@ -18,18 +18,26 @@ class User < ApplicationRecord
 
   before_create :set_default_username
 
+  def send_password_reset_mail
+    loop do
+      self.reset_password_token = SecureRandom.hex(16)
+      break unless User.exists?(reset_password_token: reset_password_token)
+    end
+    self.reset_password_sent_at = Time.zone.now
+    save!
+    UserMailer.reset_password(id).deliver_now
+  end
+
   private
 
   def set_default_username
-    default_username = email.split("@").first
+    self.username = email.split("@").first
 
     counter = 1
-    while User.exists?(username: default_username)
-      default_username = "#{default_username}#{counter}"
+    while User.exists?(username: username)
+      self.username = "#{username}#{counter}"
       counter += 1
     end
-
-    self.username = default_username
   end
 
 end
