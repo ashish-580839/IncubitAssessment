@@ -19,17 +19,34 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    @user = User.new(user_params)
+    @user = User.new(create_user_params)
 
     respond_to do |format|
       if @user.save
         UserMailer.welcome_email(@user.id).deliver_now
 
-        format.html { redirect_to @user,
-          notice: "Your account was successfully created." }
+        format.html { redirect_to @user, notice: "Your account was successfully created." }
         format.json { render json: @user, status: :created, location: @user }
       else
         format.html { render action: 'new' }
+        format.json { render json: @user.errors,
+          status: :unprocessable_entity }
+      end
+    end
+
+  end
+
+
+  # PATCH/PUT /users/1
+  # PATCH/PUT /users/1.json
+  def update
+    respond_to do |format|
+      if @user.update(edit_user_params)
+
+        format.html { redirect_to @user, notice: "Your account was successfully updated." }
+        format.json { render json: @user, status: :created, location: @user }
+      else
+        format.html { render action: 'edit' }
         format.json { render json: @user.errors,
           status: :unprocessable_entity }
       end
@@ -45,8 +62,13 @@ class UsersController < ApplicationController
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
-  def user_params
-    params.require(:user).permit(:name, :email, :username, :password, :password_confirmation)
+  def create_user_params
+    params.require(:user).permit(:name, :email, :password, :password_confirmation)
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def edit_user_params
+    params.require(:user).permit(:name, :username)
   end
 
 end
