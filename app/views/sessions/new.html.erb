@@ -4,7 +4,7 @@
   <p class="alert alert-warning"><%= flash[:alert] %></p>
 <% end %>
 
-<%= form_tag(sessions_path, {class: 'form-horizontal'}) do %>
+<%= form_tag(login_path, {class: 'form-horizontal'}) do %>
 
   <div class="form-group">
     <%= label_tag :email, "Email", {class: "col-md-2 control-label"}  %>
