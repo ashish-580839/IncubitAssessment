@@ -64,3 +64,5 @@ gem "figaro"
 gem 'jquery-rails'
 
 gem "bootstrap-sass", ">= 3.4.1"
+
+gem "letter_opener", :group => :development
