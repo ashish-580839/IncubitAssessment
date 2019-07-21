@@ -3,7 +3,7 @@ class User < ApplicationRecord
   validates :email, presence: true
   validates :name, presence: true
 
-  validates :name, length: { minimum: 2, maximum: 200 }, allow_blank: true
+  validates :name, length: { minimum: 2, maximum: 150 }, allow_blank: true
 
   validates :username, length: { minimum: 5, maximum: 150 }, allow_blank: true, on: :update
   validates :username, uniqueness: true, allow_blank: true, on: :update
@@ -11,19 +11,26 @@ class User < ApplicationRecord
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
   validates :email, uniqueness: true, allow_blank: true
 
-  validates :password, presence: true, on: :update
+  has_secure_password validations: false
 
-  validates :password, length: { minimum: 8 }, allow_blank: true
+  def password=(value)
+    super(value)
+    self.password_digest = nil if value.blank?
+  end
 
-  has_secure_password
+  validate do |record|
+    record.errors.add(:password, :blank) unless record.password_digest.present?
+  end
 
-  before_create :set_default_username
+  validates_length_of :password, within: 8..ActiveModel::SecurePassword::MAX_PASSWORD_LENGTH_ALLOWED, allow_blank: true
+  validates_confirmation_of :password, allow_blank: true
+
+  before_save { self.email = email.downcase }
+
+  before_create :set_default_columns
 
   def send_password_reset_mail
-    loop do
-      self.reset_password_token = SecureRandom.hex(16)
-      break unless User.exists?(reset_password_token: reset_password_token)
-    end
+    self.reset_password_token = generate_token(:reset_password_token)
     self.reset_password_sent_at = Time.zone.now
     save!
     UserMailer.reset_password(id).deliver_now
@@ -39,13 +46,24 @@ class User < ApplicationRecord
 
   private
 
-  def set_default_username
+  def set_default_columns
     self.username = email.split("@").first
 
     counter = 1
     while User.exists?(username: username)
       self.username = "#{username}#{counter}"
       counter += 1
+    end
+
+    self.auth_token = generate_token(:auth_token)
+
+  end
+
+
+  def generate_token(column)
+    loop do
+      token = SecureRandom.hex(16)
+      break token unless User.exists?(column => token)
     end
   end
 

@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        session[:user_id] = @user.id
+        session[:auth_token] = @user.auth_token
         UserMailer.welcome_email(@user.id).deliver_now
 
         format.html { redirect_to @user, notice: "Your account was successfully created." }
