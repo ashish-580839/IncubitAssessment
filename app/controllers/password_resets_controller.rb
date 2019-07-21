@@ -23,7 +23,7 @@ class PasswordResetsController < ApplicationController
     if @user.password_reset_expired?
       redirect_to new_password_reset_path, alert: "Password reset has expired!" and return
     end
-    p update_params
+
     if @user.update(update_params)
       @user.set_reset_fields_to_nil
       reset_session
