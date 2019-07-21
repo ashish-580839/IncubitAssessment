@@ -56,6 +56,11 @@ development:
   DATABASE_HOST: "localhost"
 
   HOST_URL: "localhost:3000"
+
+test:
+  DATABASE_USERNAME: "incubit"
+  DATABASE_PASSWORD: "1234"
+  DATABASE_HOST: "localhost"
 ```
 
 * Create database and run migrations
@@ -68,4 +73,11 @@ rails db:setup
 
 ```
 rails s
+```
+
+* Run tests
+
+```
+rspec spec/models
+rspec spec/controllers
 ```

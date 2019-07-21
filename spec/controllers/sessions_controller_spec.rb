@@ -2,25 +2,25 @@ require 'rails_helper'
 
 RSpec.describe SessionsController, type: :controller do
 
-  describe "GET #new" do
-    it "returns http success" do
-      get :new
-      expect(response).to have_http_status(:success)
-    end
+
+  let(:user) { create :user }
+
+
+  it "should login" do
+    post :create, params: {email: user.email, password: user.password }
+
+    expect(response).to redirect_to user_url(user)
+    expect(session[:auth_token]).to eq user.auth_token
   end
 
-  describe "GET #create" do
-    it "returns http success" do
-      get :create
-      expect(response).to have_http_status(:success)
-    end
+  it "should fail login" do
+    post :create, params: { email: user.email, password: 'wrong' }
+    expect(response).to render_template(:new)
   end
 
-  describe "GET #destroy" do
-    it "returns http success" do
-      get :destroy
-      expect(response).to have_http_status(:success)
-    end
+  it "should logout" do
+    delete :destroy
+    expect(response).to redirect_to root_url
   end
 
 end
