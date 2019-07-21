@@ -1,0 +1,49 @@
+
+<div >
+
+  <legend>User Profile Edit</legend>
+
+  <%= form_for @user, html: { class: 'form-horizontal' } do |f| %>
+    <% if @user.errors.any? %>
+
+      <div class="alert alert-danger alert-dismissible" role="alert" >
+          <ul class="list-unstyled">
+            <% @user.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+      </div>
+
+    <% end %>
+
+    <div class="form-group">
+      <%= f.label :email, class: "col-md-2 control-label" %>
+      <div class="col-md-10">
+        <p class="form-control-static"><%= @user.email %></p>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <%= f.label :name, class: "col-md-2 control-label" %>
+      <div class="col-md-10">
+        <%= f.text_field :name, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :username, class: "col-md-2 control-label" %>
+      <div class="col-md-10">
+        <%= f.text_field :username, class: "form-control" %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-md-offset-2 col-md-10">
+        <%= f.submit "Update profile" , class: "btn btn-default" %>
+      </div>
+    </div>
+
+  <% end %>
+
+</div>
