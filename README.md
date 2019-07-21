@@ -31,7 +31,7 @@ CREATE USER incubit WITH CREATEDB PASSWORD '1234';
 * Clone this repository
 
 ```
-git clone git@github.com:ashish-agrawal-metacube/IncubitAssessment.git
+git clone https://github.com/ashish-agrawal-metacube/IncubitAssessment.git
 ```
 
 * Install dependencies
