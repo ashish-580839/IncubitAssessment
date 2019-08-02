@@ -4,13 +4,8 @@ class PasswordResetsController < ApplicationController
 
   def create
     user = User.find_by(email: params[:email].try(:downcase))
-    if user.present?
-      user.send_password_reset_mail
-      redirect_to root_url, notice: "An email has been sent with password reset instructions"
-    else
-      flash.now.alert = "Email address not found"
-      render action: :new
-    end
+    user.send_password_reset_mail if user.present?
+    redirect_to root_url, notice: "An email has been sent with password reset instructions"
   end
 
 

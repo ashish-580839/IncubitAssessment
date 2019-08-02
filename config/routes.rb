@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   get 'password_resets/new'
   root "application#index"
 
-  resources :users
+  resources :users, except: [:index, :destroy]
 
   controller :sessions do
     get 'login' => :new, as: 'login'

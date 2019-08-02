@@ -41,14 +41,6 @@ RSpec.describe PasswordResetsController, type: :controller do
       end
     end
 
-    context "with invalid params" do
-
-      it "returns a success response (i.e. to display the 'new' template)" do
-        post :create, params: {email: "abc@xyz.com" }
-        expect(response).to be_successful
-      end
-
-    end
   end
 
   describe "GET #edit" do
